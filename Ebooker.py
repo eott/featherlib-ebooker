@@ -1,17 +1,43 @@
+GLOBAL_NAMESPACE = 'global'
+
+
 def parse_partial_toml(raw_text):
     items = {}
+    current_section = GLOBAL_NAMESPACE
+
     for line in raw_text.splitlines():
-        parts = line.split('=')
-        assign = parts[0].strip()
-        value = parts[1]
+        # Check (naively) what the line contains
+        if len(line) > 0 and line.lstrip()[0] == '[':
+            # Open a new section
+            name = line.strip().strip("[]")
+            current_section = name
+            if current_section not in items:
+                items[current_section] = {}
 
-        parse_type = check_parse_type(value)
-        if parse_type == 'array':
-            value = parse_as_array(value)
-        elif parse_type == 'string':
-            value = parse_as_string(value)
+        elif line.find('=') >= 0:
+            # We have an assignment line
+            parts = line.split('=')
+            assign = parts[0].strip()
+            value = parts[1]
 
-        items[assign] = value
+            parse_type = check_parse_type(value)
+            if parse_type == 'array':
+                value = parse_as_array(value)
+            elif parse_type == 'string':
+                value = parse_as_string(value)
+
+            # If it's a global assignment, try to put it there, unless the space is already taken
+            if current_section == GLOBAL_NAMESPACE and assign not in items:
+                items[assign] = value
+            elif current_section == GLOBAL_NAMESPACE:
+                items[GLOBAL_NAMESPACE][assign] = value
+            else:
+                items[current_section][assign] = value
+
+        else:
+            # Something else, possibly a comment
+            pass
+
     return items
 
 
@@ -37,6 +63,6 @@ def parse_as_array(raw):
 with open("sessions/0/session.toml") as conffile:
     config = parse_partial_toml(conffile.read())
     print(config)
-    for chapterFilename in config["chapters"]:
+    for chapterFilename in config["book"]["chapters"]:
         with open("sessions/0/" + chapterFilename) as chapterFile:
             pass
