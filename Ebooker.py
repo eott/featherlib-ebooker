@@ -37,3 +37,6 @@ def parse_as_array(raw):
 with open("sessions/0/session.toml") as conffile:
     config = parse_partial_toml(conffile.read())
     print(config)
+    for chapterFilename in config["chapters"]:
+        with open("sessions/0/" + chapterFilename) as chapterFile:
+            pass

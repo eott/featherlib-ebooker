@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ncx PUBLIC "-//NISO//DTD ncx 2005-1//EN" "http://www.daisy.org/z3986/2005/ncx-2005-1.dtd">
+    <ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1" xml:lang="en">
+	<head>
+		<meta name="dtb:uid" content="<%book.uid%>" />
+		<meta name="dtb:depth" content="<%book.depth%>" />
+		<meta name="dtb:totalPageCount" content="<%book.total_page_count%>" />
+		<meta name="dtb:maxPageNumber" content="<%book.max_page_number%>" />
+		<meta name="dtb:generator" content="<%meta.generator%>" />
+	</head>
+
+	<docTitle>
+		<text><%book.title%></text>
+	</docTitle>
+
+	<docAuthor>
+		<text><%author.name%></text>
+	</docAuthor>
+
+	<navMap>
+
+        <%+chapter%>
+		<navPoint id="<%~chapter.id%>" playOrder="<%~chapter.nr%>">
+			<navLabel><text><%~chapter.title%></text></navLabel>
+			<content src="<%~chapter.source_file%>" />
+		</navPoint>
+
+		<%-chapter%>
+
+	</navMap>
+</ncx>

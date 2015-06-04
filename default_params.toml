@@ -1,0 +1,18 @@
+[book]
+uid = "TMP"
+depth = "2"
+total_page_count = "0"
+max_page_number = "0"
+title = "The Book of Placeholders"
+description = "A book about placeholders and their uses im contemporary literature."
+
+[author]
+name = "Some bloke"
+publisher = "Some bloke's publisher"
+
+[meta]
+generator = "Featherlib Ebooker v0.1"
+language = "en"
+relation = "TODO: Figure out what goes here"
+date = "1970-01-01 00:00:00"
+source = "Created with Featherlib Ebooker v0.1"
