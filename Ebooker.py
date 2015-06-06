@@ -1,3 +1,5 @@
+import re
+
 GLOBAL_NAMESPACE = 'global'
 
 
@@ -59,10 +61,43 @@ def parse_as_array(raw):
     return items
 
 
+def apply_params(raw_text, params):
+    text = raw_text
+
+    # First, replace the static params
+    replacements = {}
+    pattern = re.compile('<%[^-+~].*%>')
+    matches = pattern.findall(text)
+
+    for match in matches:
+        parts = match.strip().strip('<>%').split('.')
+        if len(parts) == 1:
+            key = parts[0]
+            if key in config:
+                replacements[match] = config[key]
+            elif GLOBAL_NAMESPACE in config and key in config[GLOBAL_NAMESPACE]:
+                replacements[match] = config[GLOBAL_NAMESPACE][key]
+        elif len(parts) == 2:
+            ns = parts[0]
+            key = parts[1]
+            if ns in config and key in config[ns]:
+                replacements[match] = config[ns][key]
+        else:
+            # Nested namespaces not supported yet
+            pass
+
+    for old in replacements:
+        text = text.replace(old, replacements[old])
+
+    # Second, replace iterated params
+
+    return text
+
 # Now, do the thing
 with open("sessions/0/session.toml") as conffile:
     config = parse_partial_toml(conffile.read())
     print(config)
     for chapterFilename in config["book"]["chapters"]:
         with open("sessions/0/" + chapterFilename) as chapterFile:
-            pass
+            output = apply_params(chapterFile.read(), config)
+            print output
