@@ -1,4 +1,5 @@
 import re
+import os
 
 GLOBAL_NAMESPACE = 'global'
 
@@ -61,7 +62,7 @@ def parse_as_array(raw):
     return items
 
 
-def apply_params(raw_text, params):
+def apply_params(raw_text, config):
     text = raw_text
 
     # First, replace the static params
@@ -97,7 +98,25 @@ def apply_params(raw_text, params):
 with open("sessions/0/session.toml") as conffile:
     config = parse_partial_toml(conffile.read())
     print(config)
+
+    # Clone skeleton and parameterize static params
+    if not os.path.exists("sessions/0/" + config["book"]["name"]):
+        os.mkdir("sessions/0/" + config["book"]["name"])
+    if not os.path.exists("sessions/0/" + config["book"]["name"] + "/META-INF"):
+        os.mkdir("sessions/0/" + config["book"]["name"] + "/META-INF")
+
+    for filename in ["META-INF/container.xml", "book.ncx", "book.opf", "chapter.html", "mimetype", "styles.css"]:
+        if not os.path.exists("sessions/0/" + config["book"]["name"] + "/" + filename):
+            with open("sessions/0/" + config["book"]["name"] + "/" + filename, 'w') as currentFile:
+                with open("skeleton/" + filename) as currentSkeletonFile:
+                    content = currentSkeletonFile.read()
+                    content = apply_params(content, config)
+                    currentFile.write(content)
+                    currentFile.close()
+
+    # Read chapters and parameterize the chapter content
+    chapters = []
     for chapterFilename in config["book"]["chapters"]:
         with open("sessions/0/" + chapterFilename) as chapterFile:
             output = apply_params(chapterFile.read(), config)
-            print output
+            chapters.append(output)
