@@ -94,29 +94,65 @@ def apply_params(raw_text, config):
 
     return text
 
+
+def merge_config(first, second):
+    new = first
+
+    for key in first:
+        if key in second:
+            if isinstance(first[key], dict) and isinstance(second[key], dict):
+                for sub_key in first[key]:
+                    if sub_key in second[key]:
+                        new[key][sub_key] = second[key][sub_key]
+                for sub_key in second[key]:
+                    if sub_key not in first[key]:
+                        new[key][sub_key] = second[key][sub_key]
+            elif isinstance(first[key], dict):
+                new[key][key] = second[key]
+            elif isinstance(second[key], dict):
+                new[key] = second[key]
+                new[key][key] = first[key]
+            else:
+                new[key] = second[key]
+
+    for key in second:
+        if key not in first:
+            new[key] = second[key]
+
+    return new
+
+
+def get_config_for_session(id):
+    with open("sessions/" + id + "/session.toml") as conf_file:
+        config_session = parse_partial_toml(conf_file.read())
+        with open("default_params.toml") as def_conf_file:
+            config_default = parse_partial_toml(def_conf_file.read())
+            config = merge_config(config_default, config_session)
+            return config
+
+
 # Now, do the thing
-with open("sessions/0/session.toml") as conffile:
-    config = parse_partial_toml(conffile.read())
-    print(config)
+config = get_config_for_session("0")
+print config
 
-    # Clone skeleton and parameterize static params
-    if not os.path.exists("sessions/0/" + config["book"]["name"]):
-        os.mkdir("sessions/0/" + config["book"]["name"])
-    if not os.path.exists("sessions/0/" + config["book"]["name"] + "/META-INF"):
-        os.mkdir("sessions/0/" + config["book"]["name"] + "/META-INF")
+# Clone skeleton and parameterize static params
+if not os.path.exists("sessions/0/" + config["book"]["name"]):
+    os.mkdir("sessions/0/" + config["book"]["name"])
+if not os.path.exists("sessions/0/" + config["book"]["name"] + "/META-INF"):
+    os.mkdir("sessions/0/" + config["book"]["name"] + "/META-INF")
 
-    for filename in ["META-INF/container.xml", "book.ncx", "book.opf", "chapter.html", "mimetype", "styles.css"]:
-        if not os.path.exists("sessions/0/" + config["book"]["name"] + "/" + filename):
-            with open("sessions/0/" + config["book"]["name"] + "/" + filename, 'w') as currentFile:
-                with open("skeleton/" + filename) as currentSkeletonFile:
-                    content = currentSkeletonFile.read()
-                    content = apply_params(content, config)
-                    currentFile.write(content)
-                    currentFile.close()
+for filename in ["META-INF/container.xml", "book.ncx", "book.opf", "chapter.html", "mimetype", "styles.css"]:
+    if not os.path.exists("sessions/0/" + config["book"]["name"] + "/" + filename):
+        with open("sessions/0/" + config["book"]["name"] + "/" + filename, 'w') as currentFile:
+            with open("skeleton/" + filename) as currentSkeletonFile:
+                content = currentSkeletonFile.read()
+                content = apply_params(content, config)
+                currentFile.write(content)
+                currentFile.close()
 
-    # Read chapters and parameterize the chapter content
-    chapters = []
-    for chapterFilename in config["book"]["chapters"]:
-        with open("sessions/0/" + chapterFilename) as chapterFile:
-            output = apply_params(chapterFile.read(), config)
-            chapters.append(output)
+# Read chapters and parameterize the chapter content
+chapters = []
+for chapterFilename in config["book"]["chapters"]:
+    with open("sessions/0/" + chapterFilename) as chapterFile:
+        output = apply_params(chapterFile.read(), config)
+        chapters.append(output)
