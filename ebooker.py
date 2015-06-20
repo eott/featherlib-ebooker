@@ -6,6 +6,9 @@ import params
 
 
 def get_config_for_session(id):
+    """ Reads the configuration file for the session with the given id, parses
+    it, merges it with a default configuration and returns the generated configuration
+    file. The session config will overwrite the parameters of the default config."""
     with open("sessions/" + id + "/session.toml") as conf_file:
         config_session = pt.parse_partial_toml(conf_file.read())
         with open("default_params.toml") as def_conf_file:

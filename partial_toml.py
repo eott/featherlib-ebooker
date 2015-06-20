@@ -2,6 +2,16 @@ GLOBAL_NAMESPACE = 'global'
 
 
 def parse_partial_toml(raw_text):
+    """ Parses the given string for a partial implementation of TOML
+    (Tom's obvious minimal language: https://github.com/toml-lang/toml).
+    Partial refers to the fact that this is a very incomplete, very
+    naive and unstable implementation. This function and the entire module
+    should be replaced with a proper library if in any way possible.
+
+    This implementation currently supports global and single-layer namespaces.
+    All values are parsed as either strings or a list of string. Lists are
+    encoded by brackets [].
+    """
     items = {}
     current_section = GLOBAL_NAMESPACE
 
@@ -42,6 +52,8 @@ def parse_partial_toml(raw_text):
 
 
 def check_parse_type(raw):
+    """ Checks the type for which the given value should be parsed. Currently
+    only detects strings and arrays."""
     if raw.strip()[0] == '[':
         return 'array'
     else:
@@ -49,10 +61,18 @@ def check_parse_type(raw):
 
 
 def parse_as_string(raw):
+    """ Parses the given value as string. Strips spaces, tabs, newlines, carriage
+    returns, single and double quotation marks of the ends."""
     return raw.strip("\t\n\r \"'")
 
 
 def parse_as_array(raw):
+    """ Parses the given value as a list of string values, seperated by comma.
+    Due to the shoddy implementation of this entire module, commas cannot
+    appear within the string values. Strips spaces, tabs, newlines, carriage
+    returns and the brackets themselves from the list value.
+    See documentation of parse_as_string for further information on how the
+    strings are parsed."""
     items = []
     for item in raw.strip("[]\r\n\t ").split(','):
         items.append(parse_as_string(item))
@@ -60,6 +80,10 @@ def parse_as_array(raw):
 
 
 def merge_config(first, second):
+    """ Given a first and second configuration, merges both together into one.
+    The values in the second config replace all values with the same key in the
+    same namespace of the first config. For this purpose, the global namespace
+    is handled as a regular namespace."""
     new = first
 
     for key in first:
