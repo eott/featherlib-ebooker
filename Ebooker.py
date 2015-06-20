@@ -188,3 +188,18 @@ for filename in ["META-INF/container.xml", "book.ncx", "book.opf", "chapter.html
                 content = apply_params(content, config)
                 currentFile.write(content)
                 currentFile.close()
+
+# Split chapter file into seperate files
+with open("sessions/0/" + config["book"]["name"] + "/" + "chapter.html") as chapterFile:
+    pattern = re.compile(r'<!--startfile\s+(.*?)-->(.*?)<!--endfile-->', re.DOTALL)
+    matches = pattern.finditer(chapterFile.read())
+
+    if matches:
+        for match in matches:
+            filename = match.group(1)
+            content = match.group(2)
+            with open("sessions/0/" + config["book"]["name"] + "/" + filename + ".html", 'w') as newFile:
+                newFile.write(content)
+                newFile.close()
+
+os.remove("sessions/0/" + config["book"]["name"] + "/chapter.html")
