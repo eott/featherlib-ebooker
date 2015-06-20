@@ -1,5 +1,6 @@
 import re
 import os
+import zipfile
 
 GLOBAL_NAMESPACE = 'global'
 
@@ -203,3 +204,13 @@ with open("sessions/0/" + config["book"]["name"] + "/" + "chapter.html") as chap
                 newFile.close()
 
 os.remove("sessions/0/" + config["book"]["name"] + "/chapter.html")
+
+# Zip the generated folder and name it a epub
+zipf = zipfile.ZipFile("sessions/0/" + config["book"]["name"] + '.epub', 'w')
+for root, dirs, files in os.walk("sessions/0/" + config["book"]["name"]):
+    for file in files:
+        archive_name = file
+        if file == 'container.xml':
+            archive_name = 'META-INF/container.xml'
+        zipf.write(os.path.join(root, file), archive_name)
+zipf.close()
