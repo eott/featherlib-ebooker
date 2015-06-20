@@ -167,6 +167,13 @@ def get_config_for_session(id):
 # Now, do the thing
 config = get_config_for_session("0")
 
+# Read chapters and save chapter content in config
+chapters = []
+for chapterFilename in config["book"]["chapters"]:
+    with open("sessions/0/" + chapterFilename) as chapterFile:
+        output = apply_params(chapterFile.read(), config)
+        config[chapterFilename]["content"] = output
+
 # Clone skeleton and parameterize static params
 if not os.path.exists("sessions/0/" + config["book"]["name"]):
     os.mkdir("sessions/0/" + config["book"]["name"])
@@ -181,11 +188,3 @@ for filename in ["META-INF/container.xml", "book.ncx", "book.opf", "chapter.html
                 content = apply_params(content, config)
                 currentFile.write(content)
                 currentFile.close()
-
-# Read chapters and parameterize the chapter content
-chapters = []
-for chapterFilename in config["book"]["chapters"]:
-    with open("sessions/0/" + chapterFilename) as chapterFile:
-        output = apply_params(chapterFile.read(), config)
-        chapters.append(output)
-        print output
