@@ -1,0 +1,19 @@
+//Password Protect file
+<Files index.py>
+AuthName "Prompt"
+AuthType Basic
+AuthUserFile .htpasswd
+Require valid-user
+</Files>
+
+//Change default directory page
+DirectoryIndex index.py
+
+//Prevent viewing of .htaccess file
+<Files .htaccess>
+order allow,deny
+deny from all
+</Files>
+
+//Prevent directory listings
+Options All -Indexes
