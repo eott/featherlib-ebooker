@@ -17,3 +17,8 @@ deny from all
 
 //Prevent directory listings
 Options All -Indexes
+
+//Redirect everything not an asset to the index file
+RewriteEngine on
+RewriteCond %{REQUEST_URI} !/assets/.*$
+RewriteRule ^.*$ index.py [NC,L]
