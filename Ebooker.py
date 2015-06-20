@@ -67,7 +67,7 @@ def apply_params(raw_text, config):
 
     # First, replace the static params
     replacements = {}
-    pattern = re.compile('<%[^-+~].*%>')
+    pattern = re.compile('<%[^-+~].*?%>')
     matches = pattern.findall(text)
 
     for match in matches:
@@ -91,7 +91,7 @@ def apply_params(raw_text, config):
         text = text.replace(old, replacements[old])
 
     # Second, replace iterated params
-    pattern = re.compile(r'<%\+(.*)%>(.*)(<%-\1%>)', re.DOTALL)
+    pattern = re.compile(r'<%\+(.*?)%>(.*?)(<%-\1%>)', re.DOTALL)
     matches = pattern.finditer(text)
     replacements = []
 

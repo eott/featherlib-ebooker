@@ -19,13 +19,13 @@
 
 	<navMap>
 
-        <%+chapter%>
-		<navPoint id="<%~chapter.id%>" playOrder="<%~chapter.nr%>">
-			<navLabel><text><%~chapter.title%></text></navLabel>
-			<content src="<%~chapter.source_file%>" />
+        <%+book.chapters%>
+		<navPoint id="<%~id%>" playOrder="<%~nr%>">
+			<navLabel><text><%~title%></text></navLabel>
+			<content src="<%~filename%>.html" />
 		</navPoint>
 
-		<%-chapter%>
+		<%-book.chapters%>
 
 	</navMap>
 </ncx>

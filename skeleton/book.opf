@@ -19,14 +19,14 @@
 	<manifest>
 		<item id="ncx" href="book.ncx" media-type="application/x-dtbncx+xml" />
 		<item id="css_css1" href="styles.css" media-type="text/css" />
-		<%+chapter%>
-		<item id="<%~chapter.id%>" href="<%~chapter.id%>.html" media-type="application/xhtml+xml" />
-		<%-chapter%>
+		<%+book.chapters%>
+		<item id="<%~id%>" href="<%~filename%>.html" media-type="application/xhtml+xml" />
+		<%-book.chapters%>
 	</manifest>
 
 	<spine toc="ncx">
-	    <%+chapter>
-		<itemref idref="<%~chapter.id%>" />
-		<%-chapter>
+	    <%+book.chapters%>
+		<itemref idref="<%~id%>" />
+		<%-book.chapters%>
 	</spine>
 </package>
