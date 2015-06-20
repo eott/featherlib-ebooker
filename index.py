@@ -8,32 +8,26 @@ cookie = Cookie.SimpleCookie()
 cookie['session_id'] = 'daosjdniwludbniwluadwad'
 cookie['session_id']['expires'] = 24 * 60 * 60
 
-print cookie
-print """Content-type: text/html
+headers = """Content-type: text/html
 
-<html>
-
-<head><title>Sample CGI Script</title></head>
-
-<body>
-
-<h3> Sample CGI Script </h3>
 """
 
-form = cgi.FieldStorage()
-message = form.getvalue("message", "(no message)")
+#form = cgi.FieldStorage()
+#message = form.getvalue("message", "(no message)")
 
-print """
+print cookie
+print headers
+print
+"""<html>
+<head>
+    <title>featherlib ebooker</title>
+</head>
 
-<p>Previous message: %s</p>
+<body>
+    <h3> featherlib ebooker </h3>
 
-<p>form
-
-<form method="post" action="main.py">
-<p>message: <input type="text" name="message"/></p>
-</form>
+    <p>Make epub with a simple form.</p>
 
 </body>
-
 </html>
-""" % cgi.escape(message)
+"""
