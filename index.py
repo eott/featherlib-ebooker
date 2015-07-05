@@ -8,17 +8,14 @@ cookie = Cookie.SimpleCookie()
 cookie['session_id'] = 'daosjdniwludbniwluadwad'
 cookie['session_id']['expires'] = 24 * 60 * 60
 
-headers = """Content-type: text/html
-
-"""
-
 #form = cgi.FieldStorage()
 #message = form.getvalue("message", "(no message)")
 
 print cookie
-print headers
+print """Content-type: text/html"""
 print
-"""<html>
+print """
+<html>
 <head>
     <title>featherlib ebooker</title>
 </head>
