@@ -15,9 +15,13 @@ print cookie
 print """Content-type: text/html"""
 print
 print """
+<!DOCTYPE html>
 <html>
 <head>
     <title>featherlib ebooker</title>
+    <meta charset="utf-8"/>
+    <link rel="icon" type="image/png" href="favicon.png"/>
+    <link href="styles/default-style.css" rel="stylesheet" type="text/css"/>
 </head>
 
 <body>

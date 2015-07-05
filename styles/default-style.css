@@ -1,0 +1,19 @@
+@import url(http://fonts.googleapis.com/css?family=Lato);
+html {
+  height: 100%;
+  font-family: 'Lato', sans-serif;
+}
+body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+}
+body #header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  color: #ffffff;
+  background-color: #666666;
+  height: 50px;
+  width: 100%;
+}
