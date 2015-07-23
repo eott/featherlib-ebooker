@@ -44,17 +44,52 @@ print """
         <label for="doc-author">Author</label><br/>
         <input type="text" name="doc-author" id="doc-author"/><br/>
 
-        <div class="chapter">
+        <div class="chapter" id="chapter-1">
             <label for="chapter-1">Chapter 1</label><br/>
             <input type="text" name="chapter-1-name" id="chapter-1-name"/><br/>
             <textarea name="chapter-1-content" id="chapter-1-content"></textarea>
         </div>
 
-        <button class="addChapter" onClick="addChapter()">Add chapter</button><br/>
+        <div id="chapterInsertMarker"></div>
+        <span class="addChapter" onClick="addChapter()">Add chapter</span><br/>
 
         <button type="submit" name="save" id="save">Save</button>
         <button type="submit" name="create" id="create">Create epub</button>
+
+        <input type="hidden" name="no-of-chapters" id="no-of-chapters" value="1"/>
     </form>
+
+    <script type="text/javascript">
+        function addChapter(event) {
+            var element = document.getElementById("no-of-chapters");
+            var no = parseInt(element.value) + 1;
+            element.value = no;
+
+            var chapterWrapper = document.createElement("div");
+
+            var chapterLabel = document.createElement("label");
+            chapterLabel.setAttribute("for", "chapter-" + no);
+            chapterLabel.textContent = "Chapter " + no;
+
+            var chapterInput = document.createElement("input");
+            chapterInput.setAttribute("type", "text");
+            chapterInput.setAttribute("name", "chapter-" + no + "-name");
+            chapterInput.setAttribute("id", "chapter-" + no + "-name");
+
+            var chapterTextArea = document.createElement("textarea");
+            chapterTextArea.setAttribute("name", "chapter-" + no + "-content");
+            chapterTextArea.setAttribute("id", "chapter-" + no + "-content");
+
+            chapterWrapper.appendChild(chapterLabel);
+            chapterWrapper.appendChild(document.createElement("br"));
+            chapterWrapper.appendChild(chapterInput);
+            chapterWrapper.appendChild(document.createElement("br"));
+            chapterWrapper.appendChild(chapterTextArea);
+
+            var marker = document.getElementById("chapterInsertMarker");
+            document.getElementById("docForm").insertBefore(chapterWrapper, marker);
+        }
+    </script>
 
 </body>
 </html>
