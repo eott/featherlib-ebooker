@@ -44,6 +44,12 @@ print """
         <label for="doc-author">Author</label><br/>
         <input type="text" name="doc-author" id="doc-author"/><br/>
 
+        <span onClick="showAdditionalDocFields()">Expand</span>
+        <div id="additionalDocFields" style="display: none;">
+            <label for="doc-css">CSS</label><br/>
+            <input type="text" name="doc-css" id="doc-css"/><br/>
+        </div>
+
         <div class="chapter" id="chapter-1">
             <label for="chapter-1">Chapter 1</label><br/>
             <input type="text" name="chapter-1-name" id="chapter-1-name"/><br/>
@@ -88,6 +94,11 @@ print """
 
             var marker = document.getElementById("chapterInsertMarker");
             document.getElementById("docForm").insertBefore(chapterWrapper, marker);
+        }
+
+        function showAdditionalDocFields() {
+            element = document.getElementById("additionalDocFields");
+            element.setAttribute("style", "display: block;");
         }
     </script>
 
