@@ -2,16 +2,32 @@
 
 import cgi
 import Cookie
+import uuid
+import os
 
 
-cookie = Cookie.SimpleCookie()
-cookie['session_id'] = 'daosjdniwludbniwluadwad'
-cookie['session_id']['expires'] = 24 * 60 * 60
+cookie_data = {}
+
+if 'HTTP_COOKIE' in os.environ:
+    cookies = os.environ['HTTP_COOKIE']
+    cookies = cookies.split('; ')
+
+    for cookie in cookies:
+        cookie = cookie.split('=')
+        cookie_data[cookie[0]] = cookie[1]
+
+if "session_id" not in cookie_data:
+    session_id = uuid.uuid4()
+    cookie = Cookie.SimpleCookie()
+    cookie['session_id'] = session_id
+    cookie['session_id']['expires'] = 24 * 60 * 60
+    print cookie
+else:
+    session_id = cookie_data["session_id"]
 
 #form = cgi.FieldStorage()
 #message = form.getvalue("message", "(no message)")
 
-print cookie
 print """Content-type: text/html"""
 print
 print """
