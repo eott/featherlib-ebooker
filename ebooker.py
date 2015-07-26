@@ -17,52 +17,60 @@ def get_config_for_session(id):
             return config
 
 
-# Now, do the thing
-config = get_config_for_session("0")
+def create_epub_for_session(session_id):
+    """Create the epub file for the session with the given id. It is assumed
+    that the session config file contains the necessary data. However since a
+    default config is merged with the session's data, missing data will be
+    replaced with default values. Thus the function won't fail, but may
+    create unexpected output."""
 
-# Read chapters and save chapter content in config
-chapters = []
-for chapterFilename in config["book"]["chapters"]:
-    with open("sessions/0/" + chapterFilename) as chapterFile:
-        output = params.apply_params(chapterFile.read(), config)
-        config[chapterFilename]["content"] = output
+    config = get_config_for_session(session_id)
+    session_path = "sessions/" + session_id + "/"
+    epub_path = session_path + config["book"]["name"] + "/"
 
-# Clone skeleton and parameterize static params
-if not os.path.exists("sessions/0/" + config["book"]["name"]):
-    os.mkdir("sessions/0/" + config["book"]["name"])
-if not os.path.exists("sessions/0/" + config["book"]["name"] + "/META-INF"):
-    os.mkdir("sessions/0/" + config["book"]["name"] + "/META-INF")
+    # Read chapters and save chapter content in config
+    chapters = []
+    for chapterFilename in config["book"]["chapters"]:
+        with open(session_path + chapterFilename) as chapterFile:
+            output = params.apply_params(chapterFile.read(), config)
+            config[chapterFilename]["content"] = output
 
-for filename in ["META-INF/container.xml", "book.ncx", "book.opf", "chapter.html", "mimetype", "styles.css"]:
-    if not os.path.exists("sessions/0/" + config["book"]["name"] + "/" + filename):
-        with open("sessions/0/" + config["book"]["name"] + "/" + filename, 'w') as currentFile:
-            with open("skeleton/" + filename) as currentSkeletonFile:
-                content = currentSkeletonFile.read()
-                content = params.apply_params(content, config)
-                currentFile.write(content)
-                currentFile.close()
+    # Clone skeleton and parameterize static params
+    if not os.path.exists(epub_path):
+        os.mkdir(epub_path)
+    if not os.path.exists(epub_path + "META-INF"):
+        os.mkdir(epub_path + "META-INF")
 
-# Split chapter file into seperate files
-with open("sessions/0/" + config["book"]["name"] + "/" + "chapter.html") as chapterFile:
-    pattern = re.compile(r'<!--startfile\s+(.*?)-->(.*?)<!--endfile-->', re.DOTALL)
-    matches = pattern.finditer(chapterFile.read())
+    for filename in ["META-INF/container.xml", "book.ncx", "book.opf", "chapter.html", "mimetype", "styles.css"]:
+        if not os.path.exists(epub_path + filename):
+            with open(epub_path + filename, 'w') as currentFile:
+                with open("skeleton/" + filename) as currentSkeletonFile:
+                    content = currentSkeletonFile.read()
+                    content = params.apply_params(content, config)
+                    currentFile.write(content)
+                    currentFile.close()
 
-    if matches:
-        for match in matches:
-            filename = match.group(1)
-            content = match.group(2)
-            with open("sessions/0/" + config["book"]["name"] + "/" + filename + ".html", 'w') as newFile:
-                newFile.write(content)
-                newFile.close()
+    # Split chapter file into seperate files
+    with open(epub_path + "chapter.html") as chapterFile:
+        pattern = re.compile(r'<!--startfile\s+(.*?)-->(.*?)<!--endfile-->', re.DOTALL)
+        matches = pattern.finditer(chapterFile.read())
 
-os.remove("sessions/0/" + config["book"]["name"] + "/chapter.html")
+        if matches:
+            for match in matches:
+                filename = match.group(1)
+                content = match.group(2)
+                with open(epub_path + filename + ".html", 'w') as newFile:
+                    newFile.write(content)
+                    newFile.close()
 
-# Zip the generated folder and name it a epub
-zipf = zipfile.ZipFile("sessions/0/" + config["book"]["name"] + '.epub', 'w')
-for root, dirs, files in os.walk("sessions/0/" + config["book"]["name"]):
-    for file in files:
-        archive_name = file
-        if file == 'container.xml':
-            archive_name = 'META-INF/container.xml'
-        zipf.write(os.path.join(root, file), archive_name)
-zipf.close()
+    os.remove(epub_path + "chapter.html")
+
+    # Zip the generated folder and name it a epub
+    zipf = zipfile.ZipFile(epub_path + '.epub', 'w')
+    for root, dirs, files in os.walk(epub_path):
+        for file in files:
+            archive_name = file
+            if file == 'container.xml':
+                archive_name = 'META-INF/container.xml'
+            zipf.write(os.path.join(root, file), archive_name)
+    zipf.close()
