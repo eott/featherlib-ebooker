@@ -74,3 +74,25 @@ def create_epub_for_session(session_id):
                 archive_name = 'META-INF/container.xml'
             zipf.write(os.path.join(root, file), archive_name)
     zipf.close()
+
+
+def load_or_create_session(id):
+    """Tries to load the session config and data with the given id. If no session
+    was found, creates a new one."""
+
+    conf_path = "sessions/" + id + "/session.toml"
+    if not os.path.exists(conf_path):
+        with open(conf_path, "w") as conf_file:
+            conf_file.write("[book]")
+            conf_file.close()
+
+    session = {}
+    session["config"] = get_config_for_session(id)
+    session["chapters"] = {}
+
+    if "chapters" in sessions["config"]:
+        for chapter_name in session["config"]["chapters"]:
+            with open("sessions/" + id + "/" + chapter_name) as ch_file:
+                session["chapters"][chapter_name] = ch_file.read()
+
+    return session
