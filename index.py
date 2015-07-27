@@ -4,6 +4,7 @@ import cgi
 import Cookie
 import uuid
 import os
+import ebooker
 
 
 cookie_data = {}
@@ -24,6 +25,8 @@ if "session_id" not in cookie_data:
     print cookie
 else:
     session_id = cookie_data["session_id"]
+
+session = ebooker.load_or_create_session(session_id)
 
 #form = cgi.FieldStorage()
 #message = form.getvalue("message", "(no message)")

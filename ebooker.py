@@ -82,15 +82,16 @@ def load_or_create_session(id):
 
     conf_path = "sessions/" + id + "/session.toml"
     if not os.path.exists(conf_path):
+        os.makedirs("sessions/" + id)
         with open(conf_path, "w") as conf_file:
             conf_file.write("[book]")
             conf_file.close()
 
-    session = {}
+    session = dict()
     session["config"] = get_config_for_session(id)
     session["chapters"] = {}
 
-    if "chapters" in sessions["config"]:
+    if "chapters" in session["config"]:
         for chapter_name in session["config"]["chapters"]:
             with open("sessions/" + id + "/" + chapter_name) as ch_file:
                 session["chapters"][chapter_name] = ch_file.read()
