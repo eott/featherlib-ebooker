@@ -83,7 +83,13 @@ print """
 
 """
 
-print get_chapter_html(1, "")
+if "chapters" in session and len(session["chapters"]) > 0:
+    i = 1
+    for chapter_name in session["chapters"]:
+        print get_chapter_html(i, session["chapters"][chapter_name])
+        i += 1
+else:
+    print get_chapter_html(1, "")
 
 print """
 
