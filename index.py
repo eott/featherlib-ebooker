@@ -7,6 +7,18 @@ import os
 import ebooker
 
 
+def get_chapter_html(nr, content):
+    html = """
+
+        <div class="chapter" id="chapter-%(nr)s">
+            <label for="chapter-%(nr)s">Chapter %(nr)s</label><br/>
+            <input type="text" name="chapter-%(nr)s-name" id="chapter-%(nr)s-name"/><br/>
+            <textarea name="chapter-%(nr)s-content" id="chapter-%(nr)s-content">%(content)s</textarea>
+        </div>
+    """ % {'nr': nr, 'content': content}
+    return html
+
+
 cookie_data = {}
 
 if 'HTTP_COOKIE' in os.environ:
@@ -69,11 +81,11 @@ print """
             <input type="text" name="doc-css" id="doc-css"/><br/>
         </div>
 
-        <div class="chapter" id="chapter-1">
-            <label for="chapter-1">Chapter 1</label><br/>
-            <input type="text" name="chapter-1-name" id="chapter-1-name"/><br/>
-            <textarea name="chapter-1-content" id="chapter-1-content"></textarea>
-        </div>
+"""
+
+print get_chapter_html(1, "")
+
+print """
 
         <div id="chapterInsertMarker"></div>
         <span class="addChapter" onClick="addChapter()">Add chapter</span><br/>
