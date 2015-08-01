@@ -91,8 +91,8 @@ def load_or_create_session(id):
     session["config"] = get_config_for_session(id)
     session["chapters"] = {}
 
-    if "chapters" in session["config"]:
-        for chapter_name in session["config"]["chapters"]:
+    if "book" in session["config"] and "chapters" in session["config"]["book"]:
+        for chapter_name in session["config"]["book"]["chapters"]:
             with open("sessions/" + id + "/" + chapter_name) as ch_file:
                 session["chapters"][chapter_name] = ch_file.read()
 
