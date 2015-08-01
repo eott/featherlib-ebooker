@@ -18,7 +18,7 @@ if 'HTTP_COOKIE' in os.environ:
         cookie_data[cookie[0]] = cookie[1]
 
 if "session_id" not in cookie_data:
-    session_id = uuid.uuid4()
+    session_id = str(uuid.uuid4())
     cookie = Cookie.SimpleCookie()
     cookie['session_id'] = session_id
     cookie['session_id']['expires'] = 24 * 60 * 60
