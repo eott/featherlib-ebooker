@@ -7,15 +7,15 @@ import os
 import ebooker
 
 
-def get_chapter_html(nr, content):
+def get_chapter_html(nr, title, content):
     html = """
 
         <div class="chapter" id="chapter-%(nr)s">
             <label for="chapter-%(nr)s">Chapter %(nr)s</label><br/>
-            <input type="text" name="chapter-%(nr)s-name" id="chapter-%(nr)s-name"/><br/>
+            <input type="text" name="chapter-%(nr)s-name" id="chapter-%(nr)s-name" value="%(title)s"/><br/>
             <textarea name="chapter-%(nr)s-content" id="chapter-%(nr)s-content">%(content)s</textarea>
         </div>
-    """ % {'nr': nr, 'content': content}
+    """ % {'nr': nr, 'title': title, 'content': content}
     return html
 
 
@@ -86,7 +86,7 @@ print """
 if "chapters" in session and len(session["chapters"]) > 0:
     for chapter_name in session["chapters"]:
         chapter = session["chapters"][chapter_name]
-        print get_chapter_html(chapter["nr"], chapter["content"])
+        print get_chapter_html(chapter["nr"], chapter["title"], chapter["content"])
 else:
     print get_chapter_html(1, "")
 
