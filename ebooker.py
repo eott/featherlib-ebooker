@@ -92,8 +92,24 @@ def load_or_create_session(id):
     session["chapters"] = {}
 
     if "book" in session["config"] and "chapters" in session["config"]["book"]:
+        i = 1
         for chapter_name in session["config"]["book"]["chapters"]:
+            session["chapters"][chapter_name] = {}
+
             with open("sessions/" + id + "/" + chapter_name) as ch_file:
-                session["chapters"][chapter_name] = ch_file.read()
+                chapter = session["chapters"][chapter_name]
+                chapter["content"] = ch_file.read()
+
+            if "title" in session["config"][chapter_name]:
+                chapter["title"] = session["config"][chapter_name]["title"]
+            else:
+                chapter["title"] = ""
+
+            if "nr" in session["config"][chapter_name]:
+                chapter["nr"] = session["config"][chapter_name]["nr"]
+            else:
+                chapter["nr"] = i
+
+            i += 1
 
     return session
