@@ -132,9 +132,9 @@ def write_config(config):
 
 
 def write_as_array(key, values):
-    output = str(key) + " = ["
-    output += reduce(lambda x, y: str(x) + "," + str(y), values)
-    output += "]\n"
+    output = str(key) + " = [\""
+    output += reduce(lambda x, y: str(x) + "\",\"" + str(y), values)
+    output += "\"]\n"
     return output
 
 
