@@ -71,6 +71,9 @@ if int(form.getvalue("no-of-chapters", 0)) > 0:
     session = update_session_from_form(session, form)
     ebooker.write_session_to_files(session_id, session)
 
+if "create" in form:
+    ebooker.create_epub_for_session(session_id)
+
 print """Content-type: text/html"""
 print
 print """
@@ -136,8 +139,8 @@ print """
         <div id="chapterInsertMarker"></div>
         <span class="addChapter" onClick="addChapter()">Add chapter</span><br/>
 
-        <button type="submit" name="save" id="save">Save</button>
-        <button type="submit" name="create" id="create">Create epub</button>
+        <input type="submit" name="save" id="save" value="Save"/>
+        <input type="submit" name="create" id="create" value="Create epub"/>
 
         <input type="hidden" name="no-of-chapters" id="no-of-chapters" value="%(nr)s"/>
     </form>
