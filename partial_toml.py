@@ -108,3 +108,33 @@ def merge_config(first, second):
             new[key] = second[key]
 
     return new
+
+
+def write_config(config):
+    """ Given a configuration, writes it as string into the (partial) toml
+    format. See documentation of parse_partial_toml for what types and
+    structures are supported."""
+    output = ""
+    for key in config:
+        if isinstance(config[key], dict):
+            output += "\n[" + str(key) + "]\n"
+            for inner_key in config[key]:
+                if isinstance(config[key][inner_key], list):
+                    output += write_as_array(inner_key, config[key][inner_key])
+                else:
+                    output += write_as_string(inner_key, config[key][inner_key])
+        elif isinstance(config[key], list):
+            output += write_as_array(key, config[key])
+        else:
+            output += write_as_string(key, config[key])
+
+
+def write_as_array(key, values):
+    output = str(key) + " = ["
+    output += reduce(lambda x, y: str(x) + "," + str(y), values)
+    output += "]\n"
+    return output
+
+
+def write_as_string(key, value):
+    return str(key) + " = \"" + str(value) + "\"\n"
