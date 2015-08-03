@@ -20,11 +20,19 @@ def get_chapter_html(nr, title, content):
 
 
 def update_session_from_form(session, form):
+    # Document data
     doc_name = form.getvalue("doc-name", "")
     session["config"]["book"]["title"] = doc_name
+    doc_description = form.getvalue("doc-description", "")
+    session["config"]["book"]["description"] = doc_description
+
+    # Author data
     author = form.getvalue("doc-author", "")
     session["config"]["author"]["name"] = author
+    publisher = form.getvalue("doc-publisher", "")
+    session["config"]["author"]["publisher"] = publisher
 
+    # Chapters
     nr_of_chapters = int(form.getvalue("no-of-chapters", 0))
     session["chapters"] = {}
     for i in range(1, nr_of_chapters + 1):
@@ -90,24 +98,29 @@ print """
 
     <form id="docForm" method="post" action="index.py">
         <label for="doc-name">Document name</label><br/>
-        <input type="text" name="doc-name" id="doc-name"/><br/>
+        <input type="text" name="doc-name" id="doc-name" value="%(docname)s"/><br/>
 
         <label for="doc-author">Author</label><br/>
-        <input type="text" name="doc-author" id="doc-author"/><br/>
+        <input type="text" name="doc-author" id="doc-author" value="%(author)s"/><br/>
 
         <span onClick="showAdditionalDocFields()">Expand</span>
         <div id="additionalDocFields" style="display: none;">
             <label for="doc-publisher">Publisher</label><br/>
-            <input type="text" name="doc-publisher" id="doc-publisher"/><br/>
+            <input type="text" name="doc-publisher" id="doc-publisher" value="%(publisher)s"/><br/>
 
             <label for="doc-css">CSS</label><br/>
             <textarea name="doc-css" id="doc-css"></textarea><br/>
 
             <label for="doc-description">Description</label><br/>
-            <textarea name="doc-description" id="doc-description"></textarea><br/>
+            <textarea name="doc-description" id="doc-description">%(docdesc)s</textarea><br/>
         </div>
 
-"""
+""" % {
+    "docname": session["config"]["book"]["title"],
+    "author": session["config"]["author"]["name"],
+    "publisher": session["config"]["author"]["publisher"],
+    "docdesc": session["config"]["book"]["description"]
+}
 
 if "chapters" in session and len(session["chapters"]) > 0:
     nr_of_chapters = len(session["chapters"])
