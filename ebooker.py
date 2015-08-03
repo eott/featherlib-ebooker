@@ -122,8 +122,8 @@ def write_session_to_files(session_id, session):
 
     # Transfer session metadata to config and write chapter content
     chapters = []
-    for chapter in session["chapters"]:
-        chapter_name = "ch" + str(chapter["nr"])
+    for chapter_name in session["chapters"]:
+        chapter = session["chapters"][chapter_name]
         chapters.append(chapter_name)
         session["config"][chapter_name] = {}
         session["config"][chapter_name]["title"] = chapter["title"]

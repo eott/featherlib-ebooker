@@ -128,6 +128,8 @@ def write_config(config):
         else:
             output += write_as_string(key, config[key])
 
+    return output
+
 
 def write_as_array(key, values):
     output = str(key) + " = ["

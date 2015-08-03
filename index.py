@@ -61,6 +61,7 @@ session = ebooker.load_or_create_session(session_id)
 form = cgi.FieldStorage()
 if int(form.getvalue("no-of-chapters", 0)) > 0:
     session = update_session_from_form(session, form)
+    ebooker.write_session_to_files(session_id, session)
 
 print """Content-type: text/html"""
 print
