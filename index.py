@@ -97,8 +97,14 @@ print """
 
         <span onClick="showAdditionalDocFields()">Expand</span>
         <div id="additionalDocFields" style="display: none;">
+            <label for="doc-publisher">Publisher</label><br/>
+            <input type="text" name="doc-publisher" id="doc-publisher"/><br/>
+
             <label for="doc-css">CSS</label><br/>
-            <input type="text" name="doc-css" id="doc-css"/><br/>
+            <textarea name="doc-css" id="doc-css"></textarea><br/>
+
+            <label for="doc-description">Description</label><br/>
+            <textarea name="doc-description" id="doc-description"></textarea><br/>
         </div>
 
 """
