@@ -113,3 +113,28 @@ def load_or_create_session(id):
             i += 1
 
     return session
+
+
+def write_session_to_files(session_id, session):
+    """ Writes the given session with the given session id to the file system.
+    The session config is written to the session config file, while the chapter
+    content is written to the respective chapter files."""
+
+    # Transfer session metadata to config and write chapter content
+    chapters = []
+    for chapter in session["chapters"]:
+        chapter_name = "ch" + str(chapter["nr"])
+        chapters.append(chapter_name)
+        session["config"][chapter_name] = {}
+        session["config"][chapter_name]["title"] = chapter["title"]
+        session["config"][chapter_name]["nr"] = chapter["nr"]
+
+        with open("sessions/" + session_id + "/" + chapter_name, "w") as ch_file:
+            ch_file.write(chapter["content"])
+            ch_file.close()
+
+    session["config"]["book"]["chapters"] = chapters
+
+    with open("sessions/" + session_id + "/session.toml", "w") as conf_file:
+        conf_file.write(pt.write_config(session["config"]))
+        conf_file.close()
