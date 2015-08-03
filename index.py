@@ -19,6 +19,24 @@ def get_chapter_html(nr, title, content):
     return html
 
 
+def update_session_from_form(session, form):
+    doc_name = form.getvalue("doc-name", "")
+    session["config"]["book"]["title"] = doc_name
+    author = form.getvalue("doc-author", "")
+    session["config"]["author"]["name"] = author
+
+    nr_of_chapters = int(form.getvalue("no-of-chapters", 0))
+    session["chapters"] = {}
+    for i in range(1, nr_of_chapters + 1):
+        chapter_name = "ch" + str(i)
+        chapter_title = form.getvalue("chapter-%s-name" % str(i), "")
+        chapter_content = form.getvalue("chapter-%s-content" % str(i), "")
+        session["chapters"][chapter_name] = {"nr": str(i), "title": chapter_title, "content": chapter_content}
+
+    return session
+
+
+# Now, do the thing
 cookie_data = {}
 
 if 'HTTP_COOKIE' in os.environ:
@@ -40,8 +58,9 @@ else:
 
 session = ebooker.load_or_create_session(session_id)
 
-#form = cgi.FieldStorage()
-#message = form.getvalue("message", "(no message)")
+form = cgi.FieldStorage()
+if int(form.getvalue("no-of-chapters", 0)) > 0:
+    session = update_session_from_form(session, form)
 
 print """Content-type: text/html"""
 print
@@ -88,7 +107,7 @@ if "chapters" in session and len(session["chapters"]) > 0:
         chapter = session["chapters"][chapter_name]
         print get_chapter_html(chapter["nr"], chapter["title"], chapter["content"])
 else:
-    print get_chapter_html(1, "")
+    print get_chapter_html(1, "", "")
 
 print """
 
