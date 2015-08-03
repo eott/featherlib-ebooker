@@ -104,10 +104,12 @@ print """
 """
 
 if "chapters" in session and len(session["chapters"]) > 0:
+    nr_of_chapters = len(session["chapters"])
     for chapter_name in session["chapters"]:
         chapter = session["chapters"][chapter_name]
         print get_chapter_html(chapter["nr"], chapter["title"], chapter["content"])
 else:
+    nr_of_chapters = 1
     print get_chapter_html(1, "", "")
 
 print """
@@ -118,7 +120,7 @@ print """
         <button type="submit" name="save" id="save">Save</button>
         <button type="submit" name="create" id="create">Create epub</button>
 
-        <input type="hidden" name="no-of-chapters" id="no-of-chapters" value="1"/>
+        <input type="hidden" name="no-of-chapters" id="no-of-chapters" value="%(nr)s"/>
     </form>
 
     <script type="text/javascript">
@@ -160,4 +162,4 @@ print """
 
 </body>
 </html>
-"""
+""" % {"nr": nr_of_chapters}
