@@ -39,7 +39,12 @@ def update_session_from_form(session, form):
         chapter_name = "ch" + str(i)
         chapter_title = form.getvalue("chapter-%s-name" % str(i), "")
         chapter_content = form.getvalue("chapter-%s-content" % str(i), "")
-        session["chapters"][chapter_name] = {"nr": str(i), "title": chapter_title, "content": chapter_content}
+        session["chapters"][chapter_name] = {
+            "nr": str(i),
+            "title": chapter_title,
+            "content": chapter_content,
+            "filename": chapter_name
+        }
 
     return session
 

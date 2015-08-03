@@ -26,7 +26,7 @@ def create_epub_for_session(session_id):
 
     config = get_config_for_session(session_id)
     session_path = "sessions/" + session_id + "/"
-    epub_path = session_path + config["book"]["name"] + "/"
+    epub_path = session_path + config["book"]["title"] + "/"
 
     # Read chapters and save chapter content in config
     chapters = []
@@ -66,7 +66,7 @@ def create_epub_for_session(session_id):
     os.remove(epub_path + "chapter.html")
 
     # Zip the generated folder and name it a epub
-    zipf = zipfile.ZipFile(epub_path + '.epub', 'w')
+    zipf = zipfile.ZipFile(session_path + config["book"]["title"] + '.epub', 'w')
     for root, dirs, files in os.walk(epub_path):
         for file in files:
             archive_name = file
@@ -128,6 +128,8 @@ def write_session_to_files(session_id, session):
         session["config"][chapter_name] = {}
         session["config"][chapter_name]["title"] = chapter["title"]
         session["config"][chapter_name]["nr"] = chapter["nr"]
+        session["config"][chapter_name]["id"] = chapter["nr"]
+        session["config"][chapter_name]["filename"] = chapter["filename"]
 
         with open("sessions/" + session_id + "/" + chapter_name, "w") as ch_file:
             ch_file.write(chapter["content"])
